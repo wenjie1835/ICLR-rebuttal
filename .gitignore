@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+.env
+
+# Data & checkpoints
+*.npy
+*.pt
+*.safetensors
+*.bin
+*.ckpt
+outputs/
+loc-amt-sae/
+batch_topk/
+matryoshka_batch_topk/
+new_baseline_results/
+loc_amt_eval_results/
+semi_sweep_results/
+
+# IDE
+.ipynb_checkpoints/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+*.ipynb

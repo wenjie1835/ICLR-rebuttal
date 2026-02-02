@@ -1,0 +1,18 @@
+# Collect Pythia-160M layer 8 activations for evaluation
+output_dir: "outputs/pythia160m_L8"
+
+model:
+  name: "EleutherAI/pythia-160m-deduped"
+  layer_index: 8
+  device: "cuda"
+
+dataset:
+  name: "monology/pile-uncopyrighted"
+  split: "train"
+  text_field: "text"
+  streaming: true
+  num_sequences: 10000
+  max_seq_len: 128
+  batch_size: 8
+
+seed: 42

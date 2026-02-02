@@ -1,0 +1,60 @@
+# 示例：Pythia-160M L8 多 SAE 变体 + 三种摊销模式评估
+# 使用前请：1) 先运行 collect_activations 生成 acts_layer8.npy
+#           2) 将 sae_checkpoints 下各 roots 改为你的 checkpoint 目录
+
+output_dir: "outputs/pythia160m_L8"
+layer_index: 8
+
+model:
+  name: "EleutherAI/pythia-160m-deduped"
+  layer_index: 8
+  device: "cuda"
+
+dataset:
+  name: "monology/pile-uncopyrighted"
+  split: "train"
+  text_field: "text"
+  streaming: true
+  num_sequences: 10000
+  max_seq_len: 128
+  batch_size: 8
+
+# 三种摊销模式（与 rebuttal / §5 一致）
+eval_modes:
+  - amortized
+  - semi_amortized
+  - non_amortized
+semi_steps: 30
+non_steps: 200
+target_dense_semi_non: 0.1
+
+# SAE 检查点：按你的路径修改 roots
+sae_checkpoints:
+  standard:
+    name: "standard"
+    roots: ["path/to/standard_sae"]
+  topk:
+    name: "topk"
+    roots: ["path/to/topk_sae"]
+  batch_topk:
+    name: "batch_topk"
+    roots: ["../batch_topk/pythia-160m"]
+  matryoshka_batch_topk:
+    name: "matryoshka_batch_topk"
+    roots: ["../matryoshka_batch_topk/pythia-160m"]
+
+metrics:
+  dense_thresholds: [0.1, 0.2]
+  dead_threshold: 1.0e-6
+  correlation_subsample: 50000
+  probe_ks: [1, 2, 3, 5]
+  absorption_topk: 5
+  normalize_mse: true
+  amortization_gap:
+    enabled: true
+    ista_steps: 200
+    calibrate_lambda: true
+    target_dense: 0.1
+    samples: 10000
+
+seed: 42
